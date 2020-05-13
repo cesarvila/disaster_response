@@ -3,8 +3,6 @@ app tree.txt
 WORKSPACE/
 .ipynb_checkpoints/
 data-pipeline.ipynb
-etl/
-ml/
 data/DisasterResponse.db
 data/categories.csv
 data/messages.csv
