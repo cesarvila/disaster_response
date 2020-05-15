@@ -4,3 +4,6 @@ WORKSPACE/
 .ipynb_checkpoints/
 data-pipeline.ipynb
 data/DisasterResponse.db
+data/categories.csv
+data/messages.csv
+models/classifier.pkl

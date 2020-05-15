@@ -106,6 +106,37 @@ def index():
                     }
                 }
             }
+        },
+        {
+            'data': [
+                Bar(
+                    x=category_names,
+                    y=category_count,
+                    text=[x for x in category_names],
+                    marker=dict(
+                        color='rgb(124,205,124)',
+                        line=dict(
+                            color='rgb(0,100,0)',
+                            width=1.5,
+                        )
+                    ),
+                    opacity=0.8
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Message Categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Category",
+                    'tickangle': 30,
+                    'tickfont': {
+                        'size': 10
+                    }
+                }
+            }
         }
     ]
 
