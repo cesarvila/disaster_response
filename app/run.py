@@ -7,7 +7,7 @@ from nltk.tokenize import word_tokenize
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar, sunburst
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
@@ -46,6 +46,23 @@ def index():
     category = df.iloc[:, 4:]
     category_names = list(category.columns)
     category_count = list(category.sum(axis=0))
+
+    df1 = df.drop(['id', 'message', 'original'], axis=1)
+    dfmelt = pd.melt(df1, id_vars=['genre'], var_name = 'categories',
+                        value_name='count')
+    df_group = dfmelt.groupby(['genre', 'categories']).sum()
+    labels_ = []
+    parents_ = []
+    for i in range(df_group.shape[0]):
+        parents.append(df_group.index[i][0])
+        labels.append(df_group.index[i][1])
+    values_ = df_group['count'].tolist()
+
+
+    #food_related = category.copy()
+    #food_related = food_related[food_related['food']=1]
+    #food_related_names = list(food_related.columns)
+    #food_related_count = list(food_related.sum(axis=0))
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -106,39 +123,10 @@ def index():
                     }
                 }
             }
-        },
-        {
-            'data': [
-                Bar(
-                    x=category_names,
-                    y=category_count,
-                    text=[x for x in category_names],
-                    marker=dict(
-                        color='rgb(124,205,124)',
-                        line=dict(
-                            color='rgb(0,100,0)',
-                            width=1.5,
-                        )
-                    ),
-                    opacity=0.8
-                )
-            ],
-
-            'layout': {
-                'title': 'Distribution of Message Categories',
-                'yaxis': {
-                    'title': "Count"
-                },
-                'xaxis': {
-                    'title': "Category",
-                    'tickangle': 30,
-                    'tickfont': {
-                        'size': 10
-                    }
-                }
-            }
         }
     ]
+
+
 
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
