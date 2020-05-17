@@ -4,9 +4,8 @@ import pandas as pd
 import plotly.express as px
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-import pickle
 from flask import Flask
-from flask import render_template, request, jsonify
+from flask import render_template, request
 from plotly.graph_objs import Bar
 from plotly.graph_objects import Sunburst
 import joblib
@@ -44,9 +43,9 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
 
-    category = df.iloc[:, 4:]
-    category_names = list(category.columns)
-    category_count = list(category.sum(axis=0))
+  
+
+
 
     df1 = df.drop(['id', 'message', 'original'], axis=1)
     dfmelt = pd.melt(df1, id_vars=['genre'], var_name = 'categories', value_name='count')
