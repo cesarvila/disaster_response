@@ -1,18 +1,19 @@
 import json
 import plotly
 import pandas as pd
-
+import plotly.express as px
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-
+import pickle
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar, sunburst
-from sklearn.externals import joblib
+from plotly.graph_objs import Bar
+from plotly.graph_objects import Sunburst
+import joblib
 from sqlalchemy import create_engine
+import plotly.graph_objects as go
 
-
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__)
 
 def tokenize(text):
     tokens = word_tokenize(text)
@@ -48,23 +49,23 @@ def index():
     category_count = list(category.sum(axis=0))
 
     df1 = df.drop(['id', 'message', 'original'], axis=1)
-    dfmelt = pd.melt(df1, id_vars=['genre'], var_name = 'categories',
-                        value_name='count')
+    dfmelt = pd.melt(df1, id_vars=['genre'], var_name = 'categories', value_name='count')
     df_group = dfmelt.groupby(['genre', 'categories']).sum()
-    labels_ = []
-    parents_ = []
+    categories = []
+    genres = []
     for i in range(df_group.shape[0]):
-        parents.append(df_group.index[i][0])
-        labels.append(df_group.index[i][1])
-    values_ = df_group['count'].tolist()
-
-
-    #food_related = category.copy()
-    #food_related = food_related[food_related['food']=1]
-    #food_related_names = list(food_related.columns)
-    #food_related_count = list(food_related.sum(axis=0))
+        genres.append(df_group.index[i][0])
+        categories.append(df_group.index[i][1])
+    values = df_group['count'].tolist()
+    d = {'genres': genres, 'categories': categories, 'values': values}
+    df_plot = pd.DataFrame(d)
+    df_plot.sort_values(by='values', ascending=False, inplace=True)
+    df_group1 = df1.groupby(['genre']).sum()
+    fig = px.sunburst(df_plot, path=['genres', 'categories'], values='values')
+    #fig = px.sunburst(df_plot, path=['genres', 'categories'], values='values')
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
+
     graphs = [
         {
             'data': [
@@ -95,22 +96,47 @@ def index():
         },
         {
             'data': [
-                Bar(
-                    x=category_names,
-                    y=category_count,
-                    text=[x for x in category_names],
-                    marker=dict(
-                        color='rgb(124,205,124)',
-                        line=dict(
-                            color='rgb(0,100,0)',
-                            width=1.5,
-                        )
-                    ),
-                    opacity=0.8
+                Sunburst(
+                    labels=fig['data'][0]['labels'].tolist(),
+                    parents=fig['data'][0]['parents'].tolist(),
+                    values=fig['data'][0]['values'].tolist()
                 )
             ],
-
             'layout': {
+                'margin' : {
+                    't': 35,
+                    'l': 2,
+                    'r': 2,
+                    'b': 2
+                },
+                'title': 'Sunburst graphic'
+
+
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    name='News',
+                    x=df_group1.columns.tolist(),
+                    y=df_group1.loc['news'].tolist(),
+                    marker_color='#e03c31'
+                ),
+                Bar(
+                    name='Direct',
+                    x=df_group1.columns.tolist(),
+                    y=df_group1.loc['direct'].tolist(),
+                    marker_color='#9AA5AF'
+                ),
+                Bar(
+                    name='Social',
+                    x=df_group1.columns.tolist(),
+                    y=df_group1.loc['social'].tolist(),
+                    marker_color='#00acee'
+                )
+            ],
+            'layout': {
+                'barmode': 'stack',
                 'title': 'Distribution of Message Categories',
                 'yaxis': {
                     'title': "Count"
@@ -125,8 +151,7 @@ def index():
             }
         }
     ]
-
-
+    #graphs.append(dict(data=px.sunburst(df_plot, path=['genres', 'categories'], values='values'))
 
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
