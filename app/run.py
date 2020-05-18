@@ -13,7 +13,7 @@ import joblib
 from sqlalchemy import create_engine
 import plotly.graph_objects as go
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='template')
 
 def tokenize(text):
     tokens = word_tokenize(text)
