@@ -59,7 +59,7 @@ A great way to visualize this, is throughout a webabb. You can access to my weba
  - you have already forked and cloned this repo
  - go in your terminal to the folder app
  - run the following `python run.py`
- - go to http://0.0.0.0:3001/
+ - go to http://0.0.0.0:3001/  (http://localhost:3001/)
 
 As you can see, firstly is showed 3 insights of the messages provided by Appen, quite interesting,
 **do you agree?**
@@ -68,4 +68,33 @@ Now, try to type some messages, like *I am hungry, please get me some food* or
 *It is coming a big storm*, you can try with any message and you will see how the message is clasify
 whithin one of the 36 categories showed.
 
+### Files used
 
+The used files are: 
+ 1) `data/process_data.py` as the script to clean and create my 
+datebase.
+ 2) `models/train_classifier.py` as the script to create the model
+ 3) `app/run.py`as the script to run the webapp
+
+### Libraries used:
+ - **numpy** and **pandas** to *create dataframes* and work with them
+ - **sys**
+ - **sqlalchemy**
+ - **re**
+ - **argparse**
+ - **nltk** (`ltk.download(['punkt', 'wordnet', 'stopwords', 'averaged_perceptron_tagger'])`)
+ - **pickle**
+ - **json**
+ - **flask**
+ - **plotly**
+ - **joblib**
+ - **sklearn** for the *model* 
+
+### Credits
+
+ * Udacity
+ * Appen (Figure Eight)
+ * Stackoverflow
+ * scikit-learn
+ * w3schools
+ 
