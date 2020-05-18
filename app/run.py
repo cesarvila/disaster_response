@@ -1,3 +1,4 @@
+# python run.py
 import json
 import plotly
 import pandas as pd
@@ -43,7 +44,7 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
 
-  
+
 
 
 
