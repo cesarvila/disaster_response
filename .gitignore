@@ -5,6 +5,3 @@ WORKSPACE/
 data-pipeline.ipynb
 data/DisasterResponse.db
 models/classifier.pkl
-support.ipynb
-webapp/
-support.ipynb
